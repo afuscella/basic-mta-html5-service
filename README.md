@@ -1,2 +1,2 @@
-# basic.mta-html5-service
-Basic MTA HTML5 Service
+# Standalone Application Router using HTML5, XSUAA and Destination service
+
