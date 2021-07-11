@@ -1,0 +1,11 @@
+{
+  "name": "managed-html5-runtime-basic-mta",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/afuscella/basic-mta-html5-service.git",
+  "author": "Arthur Silva <@sap.com>",
+  "license": "MIT",
+  "scripts": {
+      "build": "mbt build"
+  }
+}
