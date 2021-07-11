@@ -1,6 +1,13 @@
 _schema-version: '3.2'
 ID: hello-world
 version: 1.0.0
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - yarn install
+
 modules:
   - name: hello-world-destination-content
     type: com.sap.application.content
@@ -8,7 +15,11 @@ modules:
       - name: hello-world_uaa
         parameters:
           service-key:
-            name: uaa_hello-world-key
+            name: hello-world_uaa-key
+      - name: hello-world-repo-host
+        parameters:
+          service-key: 
+            name: hello-world-repo-host-key
       - name: hello-world-destination-service
         parameters:
           content-target: true
@@ -16,14 +27,41 @@ modules:
       content:
         instance:
           destinations:
+            - Name: basic_mta_service_hello-world_repo-host
+              ServiceInstanceName: hello-world-repo-host
+              ServiceKeyName: hello-world-repo-host-key
+              sap.cloud.service: basic.mta.service
             - Authentication: OAuth2UserTokenExchange
               Name: basic_mta_service_uaa_hello_world
-              ServiceInstanceName: hello-world-xsuaa-service
-              ServiceKeyName: uaa_hello-world-key
+              ServiceInstanceName: hello-world_uaa
+              ServiceKeyName: hello-world_uaa-key
               sap.cloud.service: basic.mta.service
           existing_destinations_policy: update
     build-parameters:
       no-source: true
+  - name: hello-world-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: hello-world-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - HTML5Module-content.zip
+          name: HTML5Module
+          target-path: resources/
+  - name: HTML5Module
+    type: html5
+    path: HTML5Module
+    build-parameters:
+      builder: custom
+      build-result: .
+      commands:
+        - yarn run build
+      supported-platforms: []
 resources:
   - name: hello-world-destination-service
     type: org.cloudfoundry.managed-service
@@ -40,3 +78,10 @@ resources:
       path: ./xs-security.json
       service: xsuaa
       service-plan: application
+  - name: hello-world-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
