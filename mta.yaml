@@ -1,0 +1,45 @@
+_schema-version: "3.2"
+ID: hello-world
+version: 0.0.1
+
+modules:
+- name: hello-world-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: hello-world-destination-service
+    parameters:
+      content-target: true
+  - name: uaa_hello-world
+    parameters:
+      service-key:
+        name: uaa_hello-world-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Authentication: OAuth2UserTokenExchange
+          Name: basic_mta_service_uaa_hello_world
+          ServiceInstanceName: hello-world-xsuaa-service
+          ServiceKeyName: uaa_hello-world-key
+          sap.cloud.service: basic.mta.service
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+
+resources:
+- name: hello-world-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-name: hello-world-destination-service
+    service-plan: lite
+    config:
+      HTML5Runtime_enabled: true
+      version: 1.0.0
+- name: uaa_hello-world
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: hello-world-xsuaa-service
+    service-plan: application
