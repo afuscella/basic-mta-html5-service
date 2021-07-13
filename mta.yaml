@@ -50,12 +50,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - HTML5Module-content.zip
-          name: HTML5Module
+            - ReactModule-content.zip
+          name: ReactModule
           target-path: resources/
-  - name: HTML5Module
+  - name: ReactModule
     type: html5
-    path: HTML5Module
+    path: ReactModule
     build-parameters:
       builder: custom
       build-result: .
